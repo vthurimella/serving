@@ -161,6 +161,10 @@ func validateVolume(ctx context.Context, volume corev1.Volume) *apis.FieldError 
 		specified = append(specified, "persistentVolumeClaim")
 	}
 
+	if vs.HostPath != nil {
+		specified = append(specified, "hostPath")
+	}
+
 	if len(specified) == 0 {
 		fieldPaths := []string{"secret", "configMap", "projected"}
 		cfg := config.FromContextOrDefaults(ctx)
@@ -169,6 +173,9 @@ func validateVolume(ctx context.Context, volume corev1.Volume) *apis.FieldError 
 		}
 		if cfg.Features.PodSpecPersistentVolumeClaim == config.Enabled {
 			fieldPaths = append(fieldPaths, "persistentVolumeClaim")
+		}
+		if cfg.Features.PodSpecVolumesHostPath == config.Enabled {
+			fieldPaths = append(fieldPaths, "hostPath")
 		}
 		errs = errs.Also(apis.ErrMissingOneOf(fieldPaths...))
 	} else if len(specified) > 1 {
