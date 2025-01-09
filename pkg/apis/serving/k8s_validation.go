@@ -692,7 +692,7 @@ func validateVolumeMounts(mounts []corev1.VolumeMount, volumes map[string]corev1
 		}
 		seenMountPath.Insert(path.Clean(vm.MountPath))
 
-		shouldCheckReadOnlyVolume := volumes[vm.Name].EmptyDir == nil && volumes[vm.Name].PersistentVolumeClaim == nil
+		shouldCheckReadOnlyVolume := volumes[vm.Name].EmptyDir == nil && volumes[vm.Name].PersistentVolumeClaim == nil && volumes[vm.Name].HostPath == nil
 		if shouldCheckReadOnlyVolume && !vm.ReadOnly {
 			errs = errs.Also((&apis.FieldError{
 				Message: "volume mount should be readOnly for this type of volume",
